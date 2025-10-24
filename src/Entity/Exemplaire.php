@@ -20,9 +20,6 @@ class Exemplaire
     #[ORM\Column(enumType: Etat::class)]
     private ?Etat $etat = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $emplacement = null;
-
     #[ORM\Column]
     private ?bool $disponibilite = null;
 
@@ -54,18 +51,6 @@ class Exemplaire
     public function setEtat(Etat $etat): static
     {
         $this->etat = $etat;
-
-        return $this;
-    }
-
-    public function getEmplacement(): ?string
-    {
-        return $this->emplacement;
-    }
-
-    public function setEmplacement(string $emplacement): static
-    {
-        $this->emplacement = $emplacement;
 
         return $this;
     }
