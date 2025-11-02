@@ -21,6 +21,9 @@ class Tags
     #[ORM\ManyToMany(targetEntity: Ouvrage::class, inversedBy: 'tags')]
     private Collection $ouvrages;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
     public function __construct()
     {
         $this->ouvrages = new ArrayCollection();
@@ -51,6 +54,18 @@ class Tags
     public function removeOuvrage(Ouvrage $ouvrage): static
     {
         $this->ouvrages->removeElement($ouvrage);
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
 
         return $this;
     }

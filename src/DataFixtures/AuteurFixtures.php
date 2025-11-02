@@ -9,11 +9,12 @@ use Faker\Factory;
 
 class AuteurFixtures extends Fixture
 {
+    public const NBAUTEURS = 50;
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < self::NBAUTEURS; $i++) {
             $auteur = new Auteur();
             $auteur->setNom($faker->lastName());
             $auteur->setPrenom($faker->firstName());
