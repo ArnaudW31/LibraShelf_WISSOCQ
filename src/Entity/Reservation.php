@@ -10,17 +10,27 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
 {
-    #[ORM\Id]
+#[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTime $dateEmprunt = null;
 
-    #[ORM\OneToOne(inversedBy: 'reservation', cascade: ['persist', 'remove'])]
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $dateRetourPrevu = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $dateRetourReel = null;
+
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $emprunteur = null;
+
+    #[ORM\ManyToOne(targetEntity: Exemplaire::class, inversedBy: 'reservations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Exemplaire $exemplaire = null;
 
     /**
      * @var Collection<int, Exemplaire>
@@ -46,7 +56,28 @@ class Reservation
     public function setDateEmprunt(\DateTime $dateEmprunt): static
     {
         $this->dateEmprunt = $dateEmprunt;
+        return $this;
+    }
 
+    public function getDateRetourPrevu(): ?\DateTime
+    {
+        return $this->dateRetourPrevu;
+    }
+
+    public function setDateRetourPrevu(?\DateTime $dateRetourPrevu): static
+    {
+        $this->dateRetourPrevu = $dateRetourPrevu;
+        return $this;
+    }
+
+    public function getDateRetourReel(): ?\DateTime
+    {
+        return $this->dateRetourReel;
+    }
+
+    public function setDateRetourReel(?\DateTime $dateRetourReel): static
+    {
+        $this->dateRetourReel = $dateRetourReel;
         return $this;
     }
 
@@ -55,40 +86,20 @@ class Reservation
         return $this->emprunteur;
     }
 
-    public function setEmprunteur(Utilisateur $emprunteur): static
+    public function setEmprunteur(?Utilisateur $emprunteur): static
     {
         $this->emprunteur = $emprunteur;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Exemplaire>
-     */
-    public function getExemplaires(): Collection
+    public function getExemplaire(): ?Exemplaire
     {
-        return $this->exemplaires;
+        return $this->exemplaire;
     }
 
-    public function addExemplaire(Exemplaire $exemplaire): static
+    public function setExemplaire(?Exemplaire $exemplaire): static
     {
-        if (!$this->exemplaires->contains($exemplaire)) {
-            $this->exemplaires->add($exemplaire);
-            $exemplaire->setReservation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeExemplaire(Exemplaire $exemplaire): static
-    {
-        if ($this->exemplaires->removeElement($exemplaire)) {
-            // set the owning side to null (unless already changed)
-            if ($exemplaire->getReservation() === $this) {
-                $exemplaire->setReservation(null);
-            }
-        }
-
+        $this->exemplaire = $exemplaire;
         return $this;
     }
 }

@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Enum\Etat;
 use App\Repository\ExemplaireRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ExemplaireRepository::class)]
 class Exemplaire
@@ -22,9 +24,13 @@ class Exemplaire
 
     #[ORM\Column]
     private ?bool $disponibilite = null;
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'exemplaire')]
+    private Collection $reservations;
 
-    #[ORM\ManyToOne(inversedBy: 'exemplaires')]
-    private ?Reservation $reservation = null;
+    public function __construct()
+    {
+        $this->reservations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -67,14 +73,31 @@ class Exemplaire
         return $this;
     }
 
-    public function getReservation(): ?Reservation
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
     {
-        return $this->reservation;
+        return $this->reservations;
     }
 
-    public function setReservation(?Reservation $reservation): static
+    public function addReservation(Reservation $reservation): static
     {
-        $this->reservation = $reservation;
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setExemplaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            if ($reservation->getExemplaire() === $this) {
+                $reservation->setExemplaire(null);
+            }
+        }
 
         return $this;
     }
