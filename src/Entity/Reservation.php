@@ -102,4 +102,13 @@ class Reservation
         $this->exemplaire = $exemplaire;
         return $this;
     }
+
+    public function isLate(): bool
+    {
+        if ($this->dateRetourReel === null || $this->dateRetourPrevu === null) {
+            return false;
+        }
+
+        return $this->dateRetourReel > $this->dateRetourPrevu;
+    }
 }

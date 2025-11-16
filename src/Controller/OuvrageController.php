@@ -23,45 +23,55 @@ final class OuvrageController extends AbstractController
         ]);
     }
 
-#[Route('/ouvrage/{id}/reserver', name: 'app_reserver_ouvrage')]
-public function reserver(
-    Ouvrage $ouvrage,
-    ExemplaireRepository $exRepo,
-    EntityManagerInterface $em
-): Response {
+    #[Route('/ouvrage/{id}/reserver', name: 'app_reserver_ouvrage')]
+    public function reserver(
+        Ouvrage $ouvrage,
+        ExemplaireRepository $exRepo,
+        EntityManagerInterface $em
+    ): Response {
 
-    $user = $this->getUser();
-    if (!$user) {
-        throw $this->createAccessDeniedException("Vous devez être connecté.");
-    }
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException("Vous devez être connecté.");
+        }
 
-    // 1) On cherche un exemplaire disponible
-    $exemplaire = $exRepo->findOneBy([
-        'ouvrage' => $ouvrage,
-        'disponibilite' => true
-    ]);
+        // 1) On cherche un exemplaire disponible
+        $exemplaire = $exRepo->findOneBy([
+            'ouvrage' => $ouvrage,
+            'disponibilite' => true
+        ]);
 
-    if (!$exemplaire) {
-        $this->addFlash('error', 'Aucun exemplaire disponible pour cet ouvrage.');
+        if (!$exemplaire) {
+            $this->addFlash('error', 'Aucun exemplaire disponible pour cet ouvrage.');
+            return $this->redirectToRoute('app_ouvrages');
+        }
+
+        // 2) On crée une réservation
+        $reservation = new Reservation();
+        $reservation->setEmprunteur($user);
+        $reservation->setDateEmprunt(new \DateTime());
+        $duree = 0;
+
+        foreach ($exemplaire->getOuvrage()->getCategories() as $categorie) {
+            $duree = max($duree, $categorie->getDureeEmprunt());
+        }
+
+        $reservation->setDateRetourPrevu(
+            (clone $reservation->getDateEmprunt())->modify("+$duree days")
+        );
+
+        $reservation->setExemplaire($exemplaire); // OU setExemplaire() selon ton modèle
+
+        // 3) L'exemplaire passe en indisponible
+        $exemplaire->setDisponibilite(false);
+        $exemplaire->addReservation($reservation);
+
+        // 4) On persiste
+        $em->persist($reservation);
+        $em->persist($exemplaire);
+        $em->flush();
+
+        $this->addFlash('success', 'Exemplaire réservé et emprunté !');
         return $this->redirectToRoute('app_ouvrages');
     }
-
-    // 2) On crée une réservation
-    $reservation = new Reservation();
-    $reservation->setEmprunteur($user);
-    $reservation->setDateEmprunt(new \DateTime());
-    $reservation->setExemplaire($exemplaire); // OU setExemplaire() selon ton modèle
-
-    // 3) L'exemplaire passe en indisponible
-    $exemplaire->setDisponibilite(false);
-    $exemplaire->setReservation($reservation);
-
-    // 4) On persiste
-    $em->persist($reservation);
-    $em->persist($exemplaire);
-    $em->flush();
-
-    $this->addFlash('success', 'Exemplaire réservé et emprunté !');
-    return $this->redirectToRoute('app_ouvrages');
-}
 }

@@ -1,46 +1,94 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ReservationController!{% endblock %}
+{% block title %}Mes réservations{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container mt-4">
 
-<h1>Mes réservations</h1>
+    <h1 class="mb-4">📚 Mes réservations</h1>
 
-{% if reservations is empty %}
-    <p>Aucun livre réservé.</p>
-{% else %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Ouvrage</th>
-                <th>Exemplaire</th>
-                <th>Date d'emprunt</th>
-            </tr>
-        </thead>
+    {% if reservations is empty %}
+        <div class="alert alert-info">
+            Vous n'avez aucun emprunt en cours.
+        </div>
+    {% else %}
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Ouvrage</th>
+                    <th>Exemplaire</th>
+                    <th>Date d'emprunt</th>
+                    <th>Date de retour prévue</th>
+                    <th>Date de retour réel</th>
+                    <th>Statut</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        <tbody>
-        {% for reservation in reservations %}
-            <tr>
-                <td>{{ reservation.exemplaire.ouvrage.titre }}</td>
+                {% for reservation in reservations %}
+                    {% set exemplaire = reservation.exemplaire %}
+                    {% set ouvrage = exemplaire.ouvrage %}
 
-                <td>
-                    {% if reservation.exemplaire.cote %}
-                        {{ reservation.exemplaire.cote }}
-                    {% else %}
-                        Non indiqué
-                    {% endif %}
-                </td>
+                    <tr>
+                        <td>
+                            <strong>{{ ouvrage.titre }}</strong><br>
+                            <small>{{ ouvrage.editeur }}</small>
+                        </td>
 
-                <td>
-                    {{ reservation.dateEmprunt ? reservation.dateEmprunt|date('d/m/Y') : 'Pas encore emprunté' }}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+                        <td>
+                            {{ exemplaire.cote ?: '—' }}<br>
+                            <small class="text-muted">État : {{ exemplaire.etat.value }}</small>
+                        </td>
+
+                        <td>{{ reservation.dateEmprunt|date('d/m/Y') }}</td>
+
+                        <td>{{ reservation.dateRetourPrevu|date('d/m/Y') }}</td>
+
+                        <td>
+                            {% if reservation.dateRetourReel %}
+                                {{ reservation.dateRetourReel|date('d/m/Y') }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if reservation.dateRetourReel %}
+                                {% if reservation.isLate %}
+                                    <span class="badge bg-danger">En retard</span>
+                                {% else %}
+                                    <span class="badge bg-success">Rendu</span>
+                                {% endif %}
+                            {% else %}
+                                {% set now = "now"|date %}
+                                {% if reservation.dateRetourPrevu < now %}
+                                    <span class="badge bg-warning text-dark">En retard</span>
+                                {% else %}
+                                    <span class="badge bg-primary">En cours</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+
+                            {% if reservation.dateRetourReel is null %}
+                                <a href="{{ path('reservation_rendre', {id: reservation.id}) }}"
+                                   class="btn btn-sm btn-outline-success">
+                                   Rendre
+                                </a>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}
+
+</div>
 {% endblock %}
