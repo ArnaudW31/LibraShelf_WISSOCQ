@@ -49,6 +49,8 @@ class OuvrageFixtures extends Fixture implements DependentFixtureInterface
             }
 
             $manager->persist($ouvrage);
+
+            $this->addReference("ouvrage_" . $i, $ouvrage);
         }
 
         $manager->flush();

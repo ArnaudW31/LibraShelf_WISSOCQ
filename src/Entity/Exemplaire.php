@@ -27,6 +27,10 @@ class Exemplaire
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'exemplaire')]
     private Collection $reservations;
 
+    #[ORM\ManyToOne(inversedBy: 'exemplaires')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Ouvrage $ouvrage = null;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -99,6 +103,17 @@ class Exemplaire
             }
         }
 
+        return $this;
+    }
+
+    public function getOuvrage(): ?Ouvrage
+    {
+        return $this->ouvrage;
+    }
+
+    public function setOuvrage(?Ouvrage $ouvrage): static
+    {
+        $this->ouvrage = $ouvrage;
         return $this;
     }
 }

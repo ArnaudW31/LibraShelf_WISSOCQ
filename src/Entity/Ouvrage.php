@@ -49,11 +49,18 @@ class Ouvrage
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $resume = null;
 
+    /**
+     * @var Collection<int, Exemplaire>
+     */
+    #[ORM\OneToMany(targetEntity: Exemplaire::class, mappedBy: 'ouvrage', cascade: ['persist', 'remove'])]
+    private Collection $exemplaires;
+
     public function __construct()
     {
         $this->auteurs = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->exemplaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +202,32 @@ class Ouvrage
     public function setResume(?string $resume): static
     {
         $this->resume = $resume;
+
+        return $this;
+    }
+
+    public function getExemplaires(): Collection
+    {
+        return $this->exemplaires;
+    }
+
+    public function addExemplaire(Exemplaire $exemplaire): static
+    {
+        if (!$this->exemplaires->contains($exemplaire)) {
+            $this->exemplaires->add($exemplaire);
+            $exemplaire->setOuvrage($this); // IMPORTANT
+        }
+
+        return $this;
+    }
+
+    public function removeExemplaire(Exemplaire $exemplaire): static
+    {
+        if ($this->exemplaires->removeElement($exemplaire)) {
+            if ($exemplaire->getOuvrage() === $this) {
+                $exemplaire->setOuvrage(null);
+            }
+        }
 
         return $this;
     }
