@@ -55,12 +55,19 @@ class Ouvrage
     #[ORM\OneToMany(targetEntity: Exemplaire::class, mappedBy: 'ouvrage', cascade: ['persist', 'remove'])]
     private Collection $exemplaires;
 
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'ouvrage')]
+    private Collection $reservations;
+
     public function __construct()
     {
         $this->auteurs = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->exemplaires = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -226,6 +233,36 @@ class Ouvrage
         if ($this->exemplaires->removeElement($exemplaire)) {
             if ($exemplaire->getOuvrage() === $this) {
                 $exemplaire->setOuvrage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setOuvrage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getOuvrage() === $this) {
+                $reservation->setOuvrage(null);
             }
         }
 

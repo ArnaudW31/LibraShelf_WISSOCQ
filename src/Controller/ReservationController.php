@@ -30,26 +30,55 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/reservation/{id}/rendre', name: 'reservation_rendre')]
-    public function rendre(Reservation $reservation, EntityManagerInterface $em): Response
-    {
-        // Date de retour réel = maintenant
-        $reservation->setDateRetourReel(new \DateTime());
+public function rendre(Reservation $reservation, EntityManagerInterface $em): Response
+{
+    $ouvrage = $reservation->getOuvrage();
+    $exemplaire = $reservation->getExemplaire();
 
-        // L'exemplaire devient disponible
-        $exemplaire = $reservation->getExemplaire();
-        $exemplaire->setDisponibilite(true);
-
-        // Vérifie le retard
-        $isLate = $reservation->isLate();
-
+    if ($exemplaire === null) {
+        $em->remove($reservation);
         $em->flush();
 
-        if ($isLate) {
-            $this->addFlash('danger', 'Exemplaire rendu en retard (c pas bi1)');
-        } else {
-            $this->addFlash('success', 'Exemplaire rendu à temps.');
-        }
-
+        $this->addFlash('warning', "La réservation a été annulée car aucun exemplaire n'était attribué.");
         return $this->redirectToRoute('app_mes_reservations');
     }
+
+    // 1. Définir la date de retour réel
+    $reservation->setDateRetourReel(new \DateTime());
+
+    // 2. Chercher la prochaine réservation en attente
+    $nextReservation = $em->getRepository(Reservation::class)->createQueryBuilder('r')
+        ->where('r.ouvrage = :ouvrage')
+        ->andWhere('r.exemplaire IS NULL')
+        ->orderBy('r.id', 'ASC') // plus ancienne réservation d’abord
+        ->setParameter('ouvrage', $ouvrage)
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+
+    if ($nextReservation) {
+        // Attribuer l'exemplaire
+        $nextReservation->setExemplaire($exemplaire);
+        $nextReservation->setDateEmprunt(new \DateTime());
+
+        // Calcul de la date de retour prévu depuis la catégorie
+        $duree = 0;
+
+        foreach ($ouvrage->getCategories() as $categorie) {
+            $duree = max($duree, $categorie->getDureeEmprunt());
+        }
+
+        $nextReservation->setDateRetourPrevu(
+            (new \DateTime())->modify("+{$duree} days")
+        );
+
+        $exemplaire->setDisponibilite(false);
+    } else {
+        // Personne n'attend → l'exemplaire redevient disponible
+        $exemplaire->setDisponibilite(true);
+    }
+
+    $em->flush();
+    return $this->redirectToRoute('app_mes_reservations');
+}
 }

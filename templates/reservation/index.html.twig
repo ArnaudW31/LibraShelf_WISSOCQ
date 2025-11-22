@@ -28,7 +28,7 @@
 
                 {% for reservation in reservations %}
                     {% set exemplaire = reservation.exemplaire %}
-                    {% set ouvrage = exemplaire.ouvrage %}
+                    {% set ouvrage = reservation.ouvrage %}
 
                     <tr>
                         <td>
@@ -37,8 +37,13 @@
                         </td>
 
                         <td>
-                            {{ exemplaire.cote ?: '—' }}<br>
-                            <small class="text-muted">État : {{ exemplaire.etat.value }}</small>
+                            {% if exemplaire %}
+                                {{ exemplaire.cote ?? '—' }}<br>
+                                <small class="text-muted">État : {{ exemplaire.etat.value }}</small>
+                            {% else %}
+                                <span class="text-warning">En attente d’exemplaire</span><br>
+                                <small class="text-muted">Aucun exemplaire disponible pour le moment</small>
+                            {% endif %}
                         </td>
 
                         <td>{{ reservation.dateEmprunt|date('d/m/Y') }}</td>

@@ -15,7 +15,7 @@ class Reservation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTime $dateEmprunt = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
@@ -29,7 +29,7 @@ class Reservation
     private ?Utilisateur $emprunteur = null;
 
     #[ORM\ManyToOne(targetEntity: Exemplaire::class, inversedBy: 'reservations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Exemplaire $exemplaire = null;
 
     /**
@@ -37,6 +37,9 @@ class Reservation
      */
     #[ORM\OneToMany(targetEntity: Exemplaire::class, mappedBy: 'reservation')]
     private Collection $exemplaires;
+
+    #[ORM\ManyToOne(inversedBy: 'reservations')]
+    private ?Ouvrage $ouvrage = null;
 
     public function __construct()
     {
@@ -53,7 +56,7 @@ class Reservation
         return $this->dateEmprunt;
     }
 
-    public function setDateEmprunt(\DateTime $dateEmprunt): static
+    public function setDateEmprunt(?\DateTime $dateEmprunt): static
     {
         $this->dateEmprunt = $dateEmprunt;
         return $this;
@@ -110,5 +113,17 @@ class Reservation
         }
 
         return $this->dateRetourReel > $this->dateRetourPrevu;
+    }
+
+    public function getOuvrage(): ?Ouvrage
+    {
+        return $this->ouvrage;
+    }
+
+    public function setOuvrage(?Ouvrage $ouvrage): static
+    {
+        $this->ouvrage = $ouvrage;
+
+        return $this;
     }
 }
