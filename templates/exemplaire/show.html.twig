@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exemplaire{% endblock %}
+
+{% block body %}
+    <h1>Exemplaire</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ exemplaire.id }}</td>
+            </tr>
+            <tr>
+                <th>Cote</th>
+                <td>{{ exemplaire.cote }}</td>
+            </tr>
+            <tr>
+                <th>Etat</th>
+                <td>{{ exemplaire.etat }}</td>
+            </tr>
+            <tr>
+                <th>Disponibilite</th>
+                <td>{{ exemplaire.disponibilite ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_exemplaire_index') }}">back to list</a>
+
+    <a href="{{ path('app_exemplaire_edit', {'id': exemplaire.id}) }}">edit</a>
+
+    {{ include('exemplaire/_delete_form.html.twig') }}
+{% endblock %}

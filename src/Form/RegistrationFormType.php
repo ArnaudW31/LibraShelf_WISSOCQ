@@ -6,6 +6,7 @@ use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -18,6 +19,14 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email')
+            ->add('chosenRole', ChoiceType::class, [
+                'mapped' => false,
+                'label' => 'Choose your role',
+                'choices' => [
+                    'Membre' => 'ROLE_MEMBER',
+                    'Bibliothécaire' => 'ROLE_LIBRARIAN',
+                    'Administrateur' => 'ROLE_ADMIN',
+                ]])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
