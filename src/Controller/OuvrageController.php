@@ -3,23 +3,71 @@
 namespace App\Controller;
 
 use App\Repository\OuvrageRepository;
+use App\Form\OuvrageFilterType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Reservation;
 use App\Entity\Ouvrage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class OuvrageController extends AbstractController
 {
 #[Route('/ouvrages', name: 'app_ouvrages')]
-    public function index(OuvrageRepository $repo): Response
+    public function index(Request $request,OuvrageRepository $repo): Response
     {
-        $ouvrages = $repo->findAll();
+        
+        $form = $this->createForm(OuvrageFilterType::class, null, [
+            'method' => 'get',
+        ]);
+        $form->handleRequest($request);
+
+        $qb = $repo->createQueryBuilder('o')
+        ->leftJoin('o.auteurs', 'a')
+        ->leftJoin('o.categories', 'c')
+        ->leftJoin('o.tags', 't')
+        ->addSelect('a', 'c', 't')
+        ->distinct(); // nécessaire à cause des jointures
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            if (!empty($data['titre'])) {
+                $qb->andWhere('o.titre LIKE :titre')
+                ->setParameter('titre', '%'.$data['titre'].'%');
+            }
+
+            if (!empty($data['auteur'])) {
+                $qb->andWhere(':auteur MEMBER OF o.auteurs')
+                ->setParameter('auteur', $data['auteur']);
+            }
+
+            if (!empty($data['categorie'])) {
+                $qb->andWhere(':categorie MEMBER OF o.categories')
+                ->setParameter('categorie', $data['categorie']);
+            }
+
+            if (!empty($data['tag'])) {
+                $qb->andWhere(':tag MEMBER OF o.tags')
+                ->setParameter('tag', $data['tag']);
+            }
+
+            if ($data['disponible'] !== null) {
+                $qb->andWhere('EXISTS (
+                    SELECT 1 FROM App\Entity\Exemplaire e
+                    WHERE e.ouvrage = o.id AND (e.disponibilite = :dispo OR :dispo = false)
+                )')
+                ->setParameter('dispo', (bool)$data['disponible']);
+            }
+        }
+
+        $ouvrages = $qb->getQuery()->getResult();
 
         return $this->render('ouvrage/index.html.twig', [
-            'ouvrages' => $ouvrages
+            'ouvrages' => $ouvrages,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -69,7 +117,7 @@ public function reserver(
         return $this->redirectToRoute('app_mes_reservations');
     }
 
-    // PAS D’EXEMPLAIRE → réservation en file d'attente
+    // PAS D’EXEMPLAIRE -> réservation en file d'attente
     $reservation = new Reservation();
     $reservation->setOuvrage($ouvrage);
     $reservation->setEmprunteur($user);

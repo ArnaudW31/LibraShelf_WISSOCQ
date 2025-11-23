@@ -30,6 +30,10 @@
                                 <a class="nav-link" href="{{ path('homepage') }}">Accueil</a>
                             </li>
 
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_ouvrages') }}">Liste des ouvrages</a>
+                            </li>
+
                             {% if is_granted('ROLE_MEMBER') %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ path('app_mes_reservations') }}">

@@ -5,6 +5,20 @@
 {% block body %}
 <h1>Liste des ouvrages</h1>
 
+<h2>Rechercher un ouvrage</h2>
+
+{{ form_start(form, { method: 'get' }) }}
+    <div class="row">
+        <div class="col">{{ form_row(form.titre) }}</div>
+        <div class="col">{{ form_row(form.auteur) }}</div>
+        <div class="col">{{ form_row(form.categorie) }}</div>
+        <div class="col">{{ form_row(form.tag) }}</div>
+        <div class="col">{{ form_row(form.disponible) }}</div>
+    </div>
+{{ form_end(form) }}
+
+<hr>
+
 <table>
     <thead>
         <tr>
