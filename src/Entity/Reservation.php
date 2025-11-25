@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
 {
-#[ORM\Id]
+    #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
@@ -59,6 +59,7 @@ class Reservation
     public function setDateEmprunt(?\DateTime $dateEmprunt): static
     {
         $this->dateEmprunt = $dateEmprunt;
+
         return $this;
     }
 
@@ -70,6 +71,7 @@ class Reservation
     public function setDateRetourPrevu(?\DateTime $dateRetourPrevu): static
     {
         $this->dateRetourPrevu = $dateRetourPrevu;
+
         return $this;
     }
 
@@ -81,6 +83,7 @@ class Reservation
     public function setDateRetourReel(?\DateTime $dateRetourReel): static
     {
         $this->dateRetourReel = $dateRetourReel;
+
         return $this;
     }
 
@@ -92,6 +95,7 @@ class Reservation
     public function setEmprunteur(?Utilisateur $emprunteur): static
     {
         $this->emprunteur = $emprunteur;
+
         return $this;
     }
 
@@ -103,12 +107,13 @@ class Reservation
     public function setExemplaire(?Exemplaire $exemplaire): static
     {
         $this->exemplaire = $exemplaire;
+
         return $this;
     }
 
     public function isLate(): bool
     {
-        if ($this->dateRetourReel === null || $this->dateRetourPrevu === null) {
+        if (null === $this->dateRetourReel || null === $this->dateRetourPrevu) {
             return false;
         }
 

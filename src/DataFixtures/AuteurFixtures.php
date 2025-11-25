@@ -10,11 +10,12 @@ use Faker\Factory;
 class AuteurFixtures extends Fixture
 {
     public const NBAUTEURS = 50;
+
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 0; $i < self::NBAUTEURS; $i++) {
+        for ($i = 0; $i < self::NBAUTEURS; ++$i) {
             $auteur = new Auteur();
             $auteur->setNom($faker->lastName());
             $auteur->setPrenom($faker->firstName());
@@ -23,7 +24,7 @@ class AuteurFixtures extends Fixture
             $manager->persist($auteur);
 
             // Pour pouvoir y accéder depuis OuvrageFixtures
-            $this->addReference('auteur_' . $i, $auteur);
+            $this->addReference('auteur_'.$i, $auteur);
         }
 
         $manager->flush();

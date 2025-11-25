@@ -58,15 +58,14 @@
                                                 📚 Gérer les exemplaires
                                             </a>
                                         </li>
+                                        {% if is_granted('ROLE_LIBRARIAN') %}
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('app_categorie_index') }}">
+                                                🗄️ Gérer les catégories
+                                            </a>
+                                        </li>
+                                        {% endif %}
                                     </ul>
-                                </li>
-                            {% endif %}
-
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('admin_users') }}">
-                                        👑 Gestion des utilisateurs
-                                    </a>
                                 </li>
                             {% endif %}
 

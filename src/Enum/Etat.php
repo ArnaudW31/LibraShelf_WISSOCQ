@@ -10,4 +10,5 @@ enum Etat: int
     case Bon = 4;
     case TrèsBon = 5;
     case Neuf = 6;
+    
 }

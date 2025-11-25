@@ -10,6 +10,7 @@ use Faker\Factory;
 class TagsFixtures extends Fixture
 {
     public const NBTAGS = 7;
+
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -29,7 +30,7 @@ class TagsFixtures extends Fixture
             $tag->setNom($nom);
             $manager->persist($tag);
 
-            $this->addReference('tag_' . $i, $tag);
+            $this->addReference('tag_'.$i, $tag);
         }
 
         $manager->flush();

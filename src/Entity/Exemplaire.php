@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use App\Enum\Etat;
 use App\Repository\ExemplaireRepository;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExemplaireRepository::class)]
 class Exemplaire
@@ -114,6 +114,7 @@ class Exemplaire
     public function setOuvrage(?Ouvrage $ouvrage): static
     {
         $this->ouvrage = $ouvrage;
+
         return $this;
     }
 }

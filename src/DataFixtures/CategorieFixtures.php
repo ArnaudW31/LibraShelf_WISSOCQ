@@ -10,6 +10,7 @@ use Faker\Factory;
 class CategorieFixtures extends Fixture
 {
     public const NBCATEGORIES = 8;
+
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -22,7 +23,7 @@ class CategorieFixtures extends Fixture
             'Biographie',
             'Fantastique',
             'Poésie',
-            'Philosophie'
+            'Philosophie',
         ];
 
         foreach ($CATEGORIES as $i => $nom) {
@@ -31,7 +32,7 @@ class CategorieFixtures extends Fixture
             $categorie->setDureeEmprunt($faker->numberBetween(1, 30));
             $manager->persist($categorie);
 
-            $this->addReference('categorie_' . $i, $categorie);
+            $this->addReference('categorie_'.$i, $categorie);
         }
 
         $manager->flush();

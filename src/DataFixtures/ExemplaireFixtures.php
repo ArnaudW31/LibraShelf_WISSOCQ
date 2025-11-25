@@ -3,22 +3,20 @@
 namespace App\DataFixtures;
 
 use App\Entity\Exemplaire;
-use App\Enum\Etat;
 use App\Entity\Ouvrage;
+use App\Enum\Etat;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class ExemplaireFixtures extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 0; $i < 1000; $i++) {
-
+        for ($i = 0; $i < 1000; ++$i) {
             $ex = new Exemplaire();
 
             $ex->setCote($faker->bothify('###-???'));
@@ -28,17 +26,17 @@ class ExemplaireFixtures extends Fixture implements DependentFixtureInterface
             $ex->setEtat($etat);
 
             // Disponibilité : true ou false
-            $ex->setDisponibilite(true); 
+            $ex->setDisponibilite(true);
 
             // Association correcte avec un ouvrage déjà créé
             $ouvrageIndex = $faker->numberBetween(0, 500 - 1);
-            $ouvrage = $this->getReference("ouvrage_" . $ouvrageIndex, Ouvrage::class);
+            $ouvrage = $this->getReference('ouvrage_'.$ouvrageIndex, Ouvrage::class);
             $ex->setOuvrage($ouvrage);
 
             $manager->persist($ex);
 
             // Si tu veux utiliser l'exemplaire ailleurs
-            $this->addReference("exemplaire_" . $i, $ex);
+            $this->addReference('exemplaire_'.$i, $ex);
         }
 
         $manager->flush();
@@ -47,7 +45,7 @@ class ExemplaireFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            OuvrageFixtures::class
+            OuvrageFixtures::class,
         ];
     }
 }
