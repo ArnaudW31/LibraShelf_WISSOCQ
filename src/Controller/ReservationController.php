@@ -11,9 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Psr\Log\LoggerInterface;
 
+//Controlleur pour voir les réservations de l'utilisateur connecté et rendre les livres empruntés
 final class ReservationController extends AbstractController
 {
+    // Route qui affiche la liste des réservations de l'utilisateur
     #[Route('/mes-reservations', name: 'app_mes_reservations')]
     public function mesReservations(ReservationRepository $repo): Response
     {
@@ -31,12 +34,14 @@ final class ReservationController extends AbstractController
         ]);
     }
 
+    //Route pour le rendu des exemplaires
     #[Route('/reservation/{id}/rendre', name: 'reservation_rendre')]
-    public function rendre(Reservation $reservation, EntityManagerInterface $em, MessageBusInterface $bus): Response
+    public function rendre(Reservation $reservation, EntityManagerInterface $em, MessageBusInterface $bus, LoggerInterface $logger): Response
     {
         $ouvrage = $reservation->getOuvrage();
         $exemplaire = $reservation->getExemplaire();
 
+        // Annulation de la réservation si aucun exemplaire d'emprunté
         if (null === $exemplaire) {
             $em->remove($reservation);
             $em->flush();
@@ -46,10 +51,10 @@ final class ReservationController extends AbstractController
             return $this->redirectToRoute('app_mes_reservations');
         }
 
-        // 1. Définir la date de retour réel
+        //Définir la date de retour réelle
         $reservation->setDateRetourReel(new \DateTime());
 
-        // 2. Chercher la prochaine réservation en attente
+        //Chercher la prochaine réservation dans la file
         $nextReservation = $em->getRepository(Reservation::class)->createQueryBuilder('r')
             ->where('r.ouvrage = :ouvrage')
             ->andWhere('r.exemplaire IS NULL')
@@ -60,7 +65,7 @@ final class ReservationController extends AbstractController
             ->getOneOrNullResult();
 
         if ($nextReservation) {
-            // Attribuer l'exemplaire
+            // Attribuer l'exemplaire (même code que dans OuvrageController presque)
             $nextReservation->setExemplaire($exemplaire);
             $nextReservation->setDateEmprunt(new \DateTime());
 
@@ -83,11 +88,13 @@ final class ReservationController extends AbstractController
                 "Un exemplaire du livre « {$ouvrage->getTitre()} » est maintenant disponible pour vous."
             ));
         } else {
-            // Personne n'attend → l'exemplaire redevient disponible
+            // Personne n'attend -> l'exemplaire redevient disponible point final
             $exemplaire->setDisponibilite(true);
         }
 
         $em->flush();
+
+        $logger->info("Exemplaire rendu", ['exemplaire_id' => $exemplaire->getId()]);
 
         return $this->redirectToRoute('app_mes_reservations');
     }

@@ -16,17 +16,22 @@ class Exemplaire
     #[ORM\Column]
     private ?int $id = null;
 
+    //La cote de l'exemplaire (pour le retrouver dans la bibliothèque)
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cote = null;
 
+    //Son état avec un Enum fait maison
     #[ORM\Column(enumType: Etat::class)]
     private ?Etat $etat = null;
 
     #[ORM\Column]
     private ?bool $disponibilite = null;
+
+    // La réservation à laquelle il est relié
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'exemplaire')]
     private Collection $reservations;
 
+    //L'ouvrage original
     #[ORM\ManyToOne(inversedBy: 'exemplaires')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ouvrage $ouvrage = null;

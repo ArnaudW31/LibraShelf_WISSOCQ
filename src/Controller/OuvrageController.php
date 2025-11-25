@@ -14,9 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Psr\Log\LoggerInterface;
 
 final class OuvrageController extends AbstractController
 {
+    //Route pour voir la liste des ouvrages
     #[Route('/ouvrages', name: 'app_ouvrages')]
     public function index(Request $request, OuvrageRepository $repo): Response
     {
@@ -32,6 +34,7 @@ final class OuvrageController extends AbstractController
         ->addSelect('a', 'c', 't')
         ->distinct(); // nécessaire à cause des jointures
 
+        // gros IF pour le filtrage
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
@@ -72,12 +75,14 @@ final class OuvrageController extends AbstractController
         ]);
     }
 
+    //Route pour réseerver un exemplaire d'un ouvrage
     #[Route('/ouvrage/{id}/reserver', name: 'app_reserver_ouvrage')]
     public function reserver(
         Ouvrage $ouvrage,
         Security $security,
         EntityManagerInterface $em,
-        MessageBusInterface $bus
+        MessageBusInterface $bus,
+        LoggerInterface $logger
     ): Response {
         $user = $security->getUser();
 
@@ -91,7 +96,7 @@ final class OuvrageController extends AbstractController
             }
         }
 
-        // EXEMPLAIRE DISPONIBLE -> EMPRUNT IMMÉDIAT
+        // EXEMPLAIRE DISPON -> EMPRUNT
         if ($exemplaireDispo) {
             $reservation = new Reservation();
             $reservation->setOuvrage($ouvrage);
@@ -102,6 +107,7 @@ final class OuvrageController extends AbstractController
             // Calcul de la date de retour prévu depuis la catégorie
             $duree = 0;
 
+            // On prends la durée maxi parmis toutes les catégories de l'ouvrage (j'ai hésité avec le min, mais j'ai préféré prendre le max)
             foreach ($ouvrage->getCategories() as $categorie) {
                 $duree = max($duree, $categorie->getDureeEmprunt());
             }
@@ -115,6 +121,7 @@ final class OuvrageController extends AbstractController
             $em->persist($reservation);
             $em->flush();
 
+            // Notif à l'utilisateur
             $bus->dispatch(new EmailNotificationMessage(
                 $this->getUser()->getEmail(),
                 'Reservation confirmée',
@@ -122,6 +129,8 @@ final class OuvrageController extends AbstractController
             ));
 
             $this->addFlash('success', 'Exemplaire emprunté !');
+
+            $logger->info("Nouvelle réservation effectuée", ['ouvrage_id' => $ouvrage->getId()]);
 
             return $this->redirectToRoute('app_mes_reservations');
         }

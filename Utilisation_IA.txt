@@ -1,0 +1,56 @@
+Bonjour monsieur,
+
+Voici mon projet, j'espère qu'il sera à votre goût.
+
+-- Difficultés rencontrées --
+
+Tout d'abord j'aimerais parler du cours en lui même.
+
+Les diapos étaient claires ça pas de soucis mais par contre pendant les démonstrations j'ai trouvé que vous alliez vraiment TROP vite...
+Au début j'ai essayé de vous suivre , mais vous entrez les commandes et écrivez les classes si vite
+que j'avais à peine le temps de les recopier que vous passiez à autre chose...
+
+Au fur à et mesure, je prenais de plus en plus de retard sur vous à tel point que j'étais juste découragé et je vous écoutais simplement.
+Heureusement que vous mettiez votre version sur moodle car au moins j'ai pu voir vos modifs.
+
+Pour le TP, vu que je vous avais écouté et que j'ai eu des cours de Symfony l'année passée, 
+j'ai su quelles commandes entrer pour générer mes classes et comment faire des controlleurs.
+
+Pour ceux de la classe n'en ayant jamais fait avant, ça a dût être plus compliqué.
+
+Sinon j'ai eu des difficultés sur les tests et les commandes car je ne savais pas du tout quoi faire.
+Pour le reste ça a été, il y a quelques parties que je n'ai pas faites dans le TP mais dans l'ensemble c'est présent et fonctionnel.
+Il y a des parties que j'aurais pu faire mais ça aurait pris trop de temps (+ de CRUD, dashboard)...
+Et d'autres parties où je ne savais même pas par où commencer pour les faire (Scheduler, CronJobs, Voters )
+
+-- Utilisation de l'IA --
+
+Je vais pas vous mentir, j'ai utilisé de l'IA pour faire mon TP.
+
+Maintenant, avec des recherches sur internet (ce qui va plus vite que de chercher sur une IA), on trouve facilement ce dont on a besoin
+pour faire les trucs de base (Controlleurs, Entity, login, etc...) et avec la description du TP, j'ai essayé de faire moi même
+le schéma de la base de données (ce qui a mené à plusieurs migrations pour changer des attributs).
+C'est pour cela qu'il n'y a pas de système de pénalité (enfin, sauf si vous regardez dans la classe RappelRetourMessageHandler ;) )
+car j'ai mal fait mon schéma et je ne les avais pas prévues.
+
+J'ai fait la base des templates moi même mais j'ai utilisé l'IA pour ajouter du Bootstrap dedans.
+
+Ensuite, j'ai généré moi même les controlleurs mais pour faire les routes, j'ai utilisé de l'IA quand mon code ne marchait
+pas et que j'en avais marre.
+
+Pour les fixtures, j'ai utilisé de l'IA pour savoir quelles fonctions utiliser dans Faker parce que je ne l'avais pas beaucoup utilisé
+avant.
+
+J'ai utilisé de l'IA pour les mails car je ne savais pas comment faire.
+Pareils pour les tests mais c'est juste parce que je ne savais pas comment les rédiger. ( je sais à quoi ça sert pas d'inquiétude )
+
+J'ai utilisé de l'IA pour mettre en place les systèmes de logs et php-cs-fixer (juste les commandes pour installer)
+
+Ma philosophie avec l'IA c'est qu'on est à l'université pour apprendre donc utiliser l'IA pour tous n'a pas d'intérêt selon moi.
+Maintenant, j'ai essayé de faire les choses avec le moins d'IA possible, de faire moi même mais pour les parties
+qui me semblaient vraiment importantes et que je ne savais pas faire ou bien quand j'étais vraiment bloqué,
+j'ai appel à de l'IA.
+
+Voilà tout, bonne soirée.
+
+Arnaud Wissocq

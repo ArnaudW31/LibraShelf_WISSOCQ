@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// J'ai généré ce controlleur via une commande donc normalement y'a pas de soucis, j'ai testé et ça marchait donc bon
+// J'ai juste ajouté cette ligne pour donner l'accès que aux admins
 #[IsGranted('ROLE_ADMIN')]
 #[Route('/categorie')]
 final class CategorieController extends AbstractController

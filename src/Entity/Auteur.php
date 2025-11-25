@@ -16,15 +16,19 @@ class Auteur
     #[ORM\Column]
     private ?int $id = null;
 
+    //Nom de l'auteur
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    //Prénom de l'auteur
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    //Sa date de naissance
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $dateNaissance = null;
 
+    //Les ouvrages qu'il a écrit
     /**
      * @var Collection<int, Ouvrage>
      */

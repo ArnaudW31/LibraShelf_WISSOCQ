@@ -10,7 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// Ce controlleur a été généré via une commande, les seules modifications c'est pour l'Enum Etat qui marchait pas et donner l'accès que aux libraires
+#[IsGranted('ROLE_LIBRARIAN')]
 #[Route('/exemplaire')]
 final class ExemplaireController extends AbstractController
 {

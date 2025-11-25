@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// Ce controlleur a été généré via une commande, seule modif pour autoriser les libraires
 #[Route('/ouvrage')]
 #[IsGranted('ROLE_LIBRARIAN')]
 final class OuvrageCrudController extends AbstractController // J'ai dû l'appeler comme ça car j'avais déjà OuvrageController

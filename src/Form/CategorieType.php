@@ -16,11 +16,6 @@ class CategorieType extends AbstractType
         $builder
             ->add('nom')
             ->add('dureeEmprunt')
-            ->add('ouvrages', EntityType::class, [
-                'class' => Ouvrage::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
         ;
     }
 

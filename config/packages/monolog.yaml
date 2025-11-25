@@ -1,15 +1,31 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - sd2t
 
 when@dev:
     monolog:
         handlers:
             main:
-                type: stream
+                type: fingers_crossed
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
+                handler: main_rotating_file
                 channels: ["!event"]
+            main_rotating_file:
+                type: rotating_file
+                action_level: info
+                handler: nested
+                max_files: 50
+            sd2t:
+                type: rotating_file
+                action_level: debug
+                handler: main
+                buffer_size: 50
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                max_files: 50   # conserver 50 fichiers = 50 jours si fichier par jour
+                level: debug
+                channels: ['sd2t']
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:

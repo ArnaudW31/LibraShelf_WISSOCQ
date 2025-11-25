@@ -24,6 +24,7 @@ class Categorie
     #[ORM\ManyToMany(targetEntity: Ouvrage::class, inversedBy: 'categories')]
     private Collection $ouvrages;
 
+    //La durée d'emprunt d'un exemplaire est définie par ses catégories (on prends le maxi)
     #[ORM\Column]
     private ?int $dureeEmprunt = null;
 

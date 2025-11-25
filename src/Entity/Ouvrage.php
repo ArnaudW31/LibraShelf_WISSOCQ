@@ -16,18 +16,22 @@ class Ouvrage
     #[ORM\Column]
     private ?int $id = null;
 
+    //Titre du livre
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
+    //Sa liste d'auteurs
     /**
      * @var Collection<int, Auteur>
      */
     #[ORM\ManyToMany(targetEntity: Auteur::class, inversedBy: 'ouvrages')]
     private Collection $auteurs;
 
+    //Son éditeur (je me suis dit qu'on avait juste besoin du nom de l'éditeur donc pas de table Editeur)
     #[ORM\Column(length: 255)]
     private ?string $editeur = null;
 
+    //ISBN
     #[ORM\Column(length: 13)]
     private ?string $isbn = null;
 
@@ -43,18 +47,21 @@ class Ouvrage
     #[ORM\ManyToMany(targetEntity: Tags::class, mappedBy: 'ouvrages')]
     private Collection $tags;
 
+    //La date de parution
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $parution = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $resume = null;
 
+    //Les exemplaires associés à cet ouvrage
     /**
      * @var Collection<int, Exemplaire>
      */
     #[ORM\OneToMany(targetEntity: Exemplaire::class, mappedBy: 'ouvrage', cascade: ['persist', 'remove'])]
     private Collection $exemplaires;
 
+    //Les réservations sont associés à des ouvrages comme ça quand un exemplaire se libère, on sait quelles réservations doivent être màj
     /**
      * @var Collection<int, Reservation>
      */

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+//Controlleur généré par une commande pour pouvoir s'inscrire
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
@@ -25,10 +26,10 @@ class RegistrationController extends AbstractController
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
-            // encode the plain password
+            // Hash du mdp
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            // Récupération du rôle choisi (je sais que c'est pas sécur mais c'est pour l'exercice :D)
+            // Récupération du rôle choisi (je sais que c'est pas sécur mais c'est pour l'exercice, en version prod on va l'enlever bien sûr :D)
             $chosenRole = $form->get('chosenRole')->getData();
 
             $user->setRoles([$chosenRole]);
@@ -36,7 +37,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            // Utilisateur connecté
 
             return $security->login($user, 'form_login', 'main');
         }
