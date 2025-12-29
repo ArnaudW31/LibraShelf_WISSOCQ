@@ -7,6 +7,7 @@ use App\Repository\ExemplaireRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ExemplaireRepository::class)]
 class Exemplaire
@@ -17,10 +18,15 @@ class Exemplaire
     private ?int $id = null;
 
     //La cote de l'exemplaire (pour le retrouver dans la bibliothèque)
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'La cote ne peut pas dépasser 255 caractères.'
+    )]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cote = null;
 
     //Son état avec un Enum fait maison
+    #[Assert\Choice(choices: Etat::cases(), message: 'Etat invalide.')]
     #[ORM\Column(enumType: Etat::class)]
     private ?Etat $etat = null;
 
@@ -33,6 +39,7 @@ class Exemplaire
 
     //L'ouvrage original
     #[ORM\ManyToOne(inversedBy: 'exemplaires')]
+    #[Assert\NotNull(message: 'Un exemplaire doit être associé à un ouvrage.')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ouvrage $ouvrage = null;
 
