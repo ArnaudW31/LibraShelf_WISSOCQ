@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OuvrageRepository::class)]
 class Ouvrage
@@ -17,6 +18,13 @@ class Ouvrage
     private ?int $id = null;
 
     //Titre du livre
+    #[Assert\NotBlank(message: 'Le titre est obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne peut pas dépasser {{ limit }} caractères'
+    )]
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
@@ -33,6 +41,11 @@ class Ouvrage
 
     //ISBN
     #[ORM\Column(length: 13)]
+    #[Assert\NotBlank(message: 'L’ISBN est obligatoire')]
+    #[Assert\Isbn(
+        type: Assert\Isbn::ISBN_13,
+        message: 'L’ISBN "{{ value }}" n’est pas valide (ISBN-13 attendu)'
+    )]
     private ?string $isbn = null;
 
     /**
@@ -48,6 +61,8 @@ class Ouvrage
     private Collection $tags;
 
     //La date de parution
+    #[Assert\NotNull]
+    #[Assert\LessThanOrEqual('today')]
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $parution = null;
 
