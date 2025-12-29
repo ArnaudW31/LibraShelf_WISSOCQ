@@ -22,8 +22,8 @@ class Ouvrage
     #[Assert\Length(
         min: 3,
         max: 255,
-        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'Le titre ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'Le titre doit contenir au moins 3 caractères',
+        maxMessage: 'Le titre ne peut pas dépasser 255 caractères'
     )]
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
@@ -41,10 +41,10 @@ class Ouvrage
 
     //ISBN
     #[ORM\Column(length: 13)]
-    #[Assert\NotBlank(message: 'L’ISBN est obligatoire')]
+    #[Assert\NotBlank(message: 'L\'ISBN est obligatoire')]
     #[Assert\Isbn(
         type: Assert\Isbn::ISBN_13,
-        message: 'L’ISBN "{{ value }}" n’est pas valide (ISBN-13 attendu)'
+        message: 'L\'ISBN "{{ value }}" n\'est pas valide (ISBN-13 attendu)'
     )]
     private ?string $isbn = null;
 

@@ -6,6 +6,7 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
@@ -16,6 +17,11 @@ class Categorie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom de la catégorie est obligatoire.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Nan mais ho c\'est le nom de la catégorie pas un roman ici.'
+    )]
     private ?string $nom = null;
 
     /**
@@ -26,6 +32,8 @@ class Categorie
 
     //La durée d'emprunt d'un exemplaire est définie par ses catégories (on prends le maxi)
     #[ORM\Column]
+    #[Assert\NotNull(message: 'La durée d\'emprunt est obligatoire.')]
+    #[Assert\Positive(message: 'La durée d\'emprunt doit être un nombre positif.')]
     private ?int $dureeEmprunt = null;
 
     public function __construct()
