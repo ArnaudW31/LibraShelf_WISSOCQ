@@ -19,10 +19,10 @@ final class PurgeSchedule implements ScheduleProviderInterface
 
     public function getSchedule(): Schedule
     {
+        //Bon là j'avoue j'ai rien compris avec les cron sur la doc donc j'ai juste repris ce que symfony a généré
         return (new Schedule())
             ->add(
-                // @TODO - Modify the frequency to suite your needs
-                RecurringMessage::every('1 hour', new PurgeMessage()),
+                RecurringMessage::every('30 days', new PurgeMessage()),
             )
             ->stateful($this->cache)
         ;
