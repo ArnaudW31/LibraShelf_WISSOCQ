@@ -23,7 +23,10 @@ php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
 OU importez vos données (bonne chance)
 
+6. Démarrez le Scheduler pour la purge automatique des données
+php bin/console messenger:consume scheduler_default
+
 Une fois toutes ces étapes terminées, vous pouvez démarrer le serveur avec symfony server:start !
 
 ### Bonne lecture !
-(Bonne correction...)
+(Bonne 2e correction...)
