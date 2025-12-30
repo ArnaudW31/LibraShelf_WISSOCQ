@@ -26,7 +26,7 @@ class Exemplaire
     private ?string $cote = null;
 
     //Son état avec un Enum fait maison
-    #[Assert\Choice(choices: Etat::cases(), message: 'Etat invalide.')]
+    #[Assert\NotNull]
     #[ORM\Column(enumType: Etat::class)]
     private ?Etat $etat = null;
 
