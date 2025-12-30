@@ -1,13 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Exemplaire{% endblock %}
+{% block title %}Modifier exemplaire{% endblock %}
 
 {% block body %}
-    <h1>Edit Exemplaire</h1>
+    <h1>Modifier un exemplaire</h1>
 
     {{ include('exemplaire/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_exemplaire_index') }}">back to list</a>
+    <button type="button" class="btn btn-outline-primary">
+        <a href="{{ path('app_exemplaire_index') }}">Retourner à la liste des exemplaires</a>
+    </button>
 
     {{ include('exemplaire/_delete_form.html.twig') }}
 {% endblock %}

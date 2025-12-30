@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Exemplaire{% endblock %}
+{% block title %}Nouvel exemplaire{% endblock %}
 
 {% block body %}
-    <h1>Create new Exemplaire</h1>
+    <h1>Créer un nouvel exemplaire</h1>
 
     {{ include('exemplaire/_form.html.twig') }}
 
-    <a href="{{ path('app_exemplaire_index') }}">back to list</a>
+    <button type="button" class="btn btn-outline-primary">
+        <a href="{{ path('app_exemplaire_index') }}">Retourner à la liste des exemplaires</a>
+    </button>
 {% endblock %}

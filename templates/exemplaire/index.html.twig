@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exemplaire index{% endblock %}
+{% block title %}Gestion exemplaires{% endblock %}
 
 {% block body %}
-    <h1>Exemplaire index</h1>
-    <a href="{{ path('app_exemplaire_new') }}">Create new</a>
+    <h1>Gérer la liste des exemplaires</h1>
+    <button type="button" class="btn btn-outline-primary">
+        <a href="{{ path('app_exemplaire_new') }}">Créer un nouvel exemplaire</a>
+    </button>
 
     <table class="table">
         <thead>
@@ -22,15 +24,15 @@
                 <td>{{ exemplaire.id }}</td>
                 <td>{{ exemplaire.cote }}</td>
                 <td>{{ exemplaire.etat.name }}</td>
-                <td>{{ exemplaire.disponibilite ? 'Yes' : 'No' }}</td>
+                <td>{{ exemplaire.disponibilite ? 'Oui' : 'Nope' }}</td>
                 <td>
-                    <a href="{{ path('app_exemplaire_show', {'id': exemplaire.id}) }}">show</a>
-                    <a href="{{ path('app_exemplaire_edit', {'id': exemplaire.id}) }}">edit</a>
+                    <a href="{{ path('app_exemplaire_show', {'id': exemplaire.id}) }}">Détails</a>
+                    <a href="{{ path('app_exemplaire_edit', {'id': exemplaire.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucun exemplaire trouvé flop</td>
             </tr>
         {% endfor %}
         </tbody>
