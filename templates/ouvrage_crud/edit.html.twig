@@ -1,13 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Ouvrage{% endblock %}
+{% block title %}Modifier ouvrage{% endblock %}
 
 {% block body %}
-    <h1>Edit Ouvrage</h1>
+    <h1>Modifier un ouvrage</h1>
 
     {{ include('ouvrage_crud/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_ouvrage_crud_index') }}">back to list</a>
+    <button type="button" class="btn btn-outline-primary">
+        <a href="{{ path('app_ouvrage_crud_index') }}">Retourer sur la liste des ouvrages</a>
+    </button>
 
     {{ include('ouvrage_crud/_delete_form.html.twig') }}
 {% endblock %}

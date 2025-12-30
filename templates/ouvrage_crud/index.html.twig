@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ouvrage index{% endblock %}
+{% block title %}Liste des ouvrages{% endblock %}
 
 {% block body %}
-    <h1>Ouvrage index</h1>
-    <a href="{{ path('app_ouvrage_crud_new') }}">Create new</a>
+    <h1>Gérer la liste des ouvrages</h1>
+    <button type="button" class="btn btn-outline-primary">
+        <a href="{{ path('app_ouvrage_crud_new') }}">Créer un nouvel ouvrage</a>
+    </button>
     <table class="table">
         <thead>
             <tr>
@@ -27,13 +29,13 @@
                 <td>{{ ouvrage.parution ? ouvrage.parution|date('Y-m-d') : '' }}</td>
                 <td>{{ ouvrage.resume }}</td>
                 <td>
-                    <a href="{{ path('app_ouvrage_crud_show', {'id': ouvrage.id}) }}">show</a>
-                    <a href="{{ path('app_ouvrage_crud_edit', {'id': ouvrage.id}) }}">edit</a>
+                    <a href="{{ path('app_ouvrage_crud_show', {'id': ouvrage.id}) }}">Détails</a>
+                    <a href="{{ path('app_ouvrage_crud_edit', {'id': ouvrage.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="7">Aucun ouvrage, créez en !</td>
             </tr>
         {% endfor %}
         </tbody>

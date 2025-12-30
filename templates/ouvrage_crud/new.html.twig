@@ -3,9 +3,12 @@
 {% block title %}New Ouvrage{% endblock %}
 
 {% block body %}
-    <h1>Create new Ouvrage</h1>
+    <h1>Créer un nouvel ouvrage</h1>
 
     {{ include('ouvrage_crud/_form.html.twig') }}
 
-    <a href="{{ path('app_ouvrage_crud_index') }}">back to list</a>
+    <button type="button" class="btn btn-outline-primary">
+        <a href="{{ path('app_ouvrage_crud_index') }}">Retourer sur la liste des ouvrages</a>
+    </button>
+    
 {% endblock %}

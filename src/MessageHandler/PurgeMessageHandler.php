@@ -17,6 +17,7 @@ class PurgeMessageHandler
 
     public function __invoke(PurgeMessage $message): void
     {
+        //On vire les emprunts qui ont eu lieu il y a + de 30 jours tout les 30 jours
         $date = new \DateTimeImmutable('-30 days');
 
         $this->em->createQueryBuilder()
