@@ -1,16 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Categorie index{% endblock %}
+{% block title %}Gestion des catégories{% endblock %}
 
 {% block body %}
-    <h1>Categorie index</h1>
+    <h1>Liste des catégories</h1>
+
+    <button type="button" class="btn btn-outline-primary">
+        <a href="{{ path('app_categorie_new') }}">Créer une catégorie</a>
+    </button>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>DureeEmprunt</th>
+                <th>Durée d'emprunt</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -21,17 +25,16 @@
                 <td>{{ categorie.nom }}</td>
                 <td>{{ categorie.dureeEmprunt }}</td>
                 <td>
-                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}">show</a>
-                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">edit</a>
+                    <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}">Détails</a>
+                    <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">Aucune catégorie</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_categorie_new') }}">Create new</a>
 {% endblock %}
